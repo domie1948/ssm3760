@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.ZhiyuanzheDao">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        a.id as id
+        ,a.username as username
+        ,a.password as password
+        ,a.zhiyuanzhe_name as zhiyuanzheName
+        ,a.zhiyuanzhe_sex_types as zhiyuanzheSexTypes
+        ,a.zhiyuanzhe_age as zhiyuanzheAge
+        ,a.zhiyuanzhe_photo as zhiyuanzhePhoto
+        ,a.zhiyuanzhe_gongzuo as zhiyuanzheGongzuo
+        ,a.zhiyuanzhe_jine as zhiyuanzheJine
+        ,a.zhiyuanzhe_address as zhiyuanzheAddress
+        ,a.zhiyuanzhe_phone as zhiyuanzhePhone
+        ,a.zhiyuanzhe_id_number as zhiyuanzheIdNumber
+        ,a.zhiyuanzhe_aihao as zhiyuanzheAihao
+        ,a.zhiyuanzhe_yesno_types as zhiyuanzheYesnoTypes
+        ,a.zhiyuanzhe_types as zhiyuanzheTypes
+        ,a.create_time as createTime
+    </sql>
+    <select id="selectListView" parameterType="map" resultType="com.entity.view.ZhiyuanzheView" >
+        SELECT
+        <include refid="Base_Column_List" />
+
+--         级联表的字段
+
+        FROM zhiyuanzhe  a
+
+        <where>
+            <if test=" params.username != '' and params.username != null and params.username != 'null' ">
+                and a.username like CONCAT('%',#{params.username},'%')
+            </if>
+            <if test=" params.password != '' and params.password != null and params.password != 'null' ">
+                and a.password like CONCAT('%',#{params.password},'%')
+            </if>
+            <if test=" params.zhiyuanzheName != '' and params.zhiyuanzheName != null and params.zhiyuanzheName != 'null' ">
+                and a.zhiyuanzhe_name like CONCAT('%',#{params.zhiyuanzheName},'%')
+            </if>
+            <if test="params.zhiyuanzheSexTypes != null">
+                and a.zhiyuanzhe_sex_types = #{params.zhiyuanzheSexTypes}
+            </if>
+            <if test="params.zhiyuanzheAgeStart != null">
+                <![CDATA[  and a.zhiyuanzhe_age >= #{params.zhiyuanzheAgeStart}   ]]>
+            </if>
+            <if test="params.zhiyuanzheAgeEnd != null">
+                <![CDATA[  and a.zhiyuanzhe_age <= #{params.zhiyuanzheAgeEnd}   ]]>
+            </if>
+            <if test=" params.zhiyuanzheGongzuo != '' and params.zhiyuanzheGongzuo != null and params.zhiyuanzheGongzuo != 'null' ">
+                and a.zhiyuanzhe_gongzuo like CONCAT('%',#{params.zhiyuanzheGongzuo},'%')
+            </if>
+            <if test="params.zhiyuanzheJineStart != null">
+                <![CDATA[  and a.zhiyuanzhe_jine >= #{params.zhiyuanzheJineStart}   ]]>
+            </if>
+            <if test="params.zhiyuanzheJineEnd != null">
+                <![CDATA[  and a.zhiyuanzhe_jine <= #{params.zhiyuanzheJineEnd}   ]]>
+            </if>
+            <if test=" params.zhiyuanzheAddress != '' and params.zhiyuanzheAddress != null and params.zhiyuanzheAddress != 'null' ">
+                and a.zhiyuanzhe_address like CONCAT('%',#{params.zhiyuanzheAddress},'%')
+            </if>
+            <if test=" params.zhiyuanzhePhone != '' and params.zhiyuanzhePhone != null and params.zhiyuanzhePhone != 'null' ">
+                and a.zhiyuanzhe_phone like CONCAT('%',#{params.zhiyuanzhePhone},'%')
+            </if>
+            <if test=" params.zhiyuanzheIdNumber != '' and params.zhiyuanzheIdNumber != null and params.zhiyuanzheIdNumber != 'null' ">
+                and a.zhiyuanzhe_id_number like CONCAT('%',#{params.zhiyuanzheIdNumber},'%')
+            </if>
+            <if test=" params.zhiyuanzheAihao != '' and params.zhiyuanzheAihao != null and params.zhiyuanzheAihao != 'null' ">
+                and a.zhiyuanzhe_aihao like CONCAT('%',#{params.zhiyuanzheAihao},'%')
+            </if>
+            <if test="params.zhiyuanzheYesnoTypes != null">
+                and a.zhiyuanzhe_yesno_types = #{params.zhiyuanzheYesnoTypes}
+            </if>
+            <if test="params.zhiyuanzheTypes != null">
+                and a.zhiyuanzhe_types = #{params.zhiyuanzheTypes}
+            </if>
+
+        </where>
+        order by a.${params.orderBy} desc
+    </select>
+
+</mapper>

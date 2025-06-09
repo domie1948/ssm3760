@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.ChongwuHuifangDao">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        a.id as id
+        ,a.chongwu_order_id as chongwuOrderId
+        ,a.huifang_time as huifangTime
+        ,a.chongwu_huifang_content as chongwuHuifangContent
+        ,a.insert_time as insertTime
+        ,a.create_time as createTime
+    </sql>
+    <select id="selectListView" parameterType="map" resultType="com.entity.view.ChongwuHuifangView" >
+        SELECT
+        <include refid="Base_Column_List" />
+
+--         级联表的字段
+        ,chongwuOrder.chongwu_id as chongwuId
+        ,chongwuOrder.yonghu_id as yonghuId
+        ,chongwuOrder.xianzai_address as xianzaiAddress
+        ,chongwuOrder.shiyang_time as shiyangTime
+        ,chongwuOrder.insert_time as insertTime
+
+        FROM chongwu_huifang  a
+        left JOIN chongwu_order chongwuOrder ON a.chongwu_order_id = chongwuOrder.id
+
+        <where>
+            <if test="params.chongwuOrderId != null">
+                and a.chongwu_order_id = #{params.chongwuOrderId}
+            </if>
+            <if test=" params.huifangTimeStart != '' and params.huifangTimeStart != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(a.huifang_time) >= UNIX_TIMESTAMP(#{params.huifangTimeStart}) ]]>
+            </if>
+            <if test=" params.huifangTimeEnd != '' and params.huifangTimeEnd != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(a.huifang_time) <= UNIX_TIMESTAMP(#{params.huifangTimeEnd}) ]]>
+            </if>
+            <if test=" params.chongwuHuifangContent != '' and params.chongwuHuifangContent != null and params.chongwuHuifangContent != 'null' ">
+                and a.chongwu_huifang_content like CONCAT('%',#{params.chongwuHuifangContent},'%')
+            </if>
+            <if test=" params.insertTimeStart != '' and params.insertTimeStart != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(a.insert_time) >= UNIX_TIMESTAMP(#{params.insertTimeStart}) ]]>
+            </if>
+            <if test=" params.insertTimeEnd != '' and params.insertTimeEnd != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(a.insert_time) <= UNIX_TIMESTAMP(#{params.insertTimeEnd}) ]]>
+            </if>
+
+            <if test="params.chongwuId != null">
+                and chongwuOrder.chongwu_id = #{params.chongwuId}
+            </if>
+            <if test="params.yonghuId != null">
+                and chongwuOrder.yonghu_id = #{params.yonghuId}
+            </if>
+            <if test=" params.xianzaiAddress != '' and params.xianzaiAddress != null and params.xianzaiAddress != 'null' ">
+                and chongwuOrder.xianzai_address like CONCAT('%',#{params.xianzaiAddress},'%')
+            </if>
+            <if test=" params.shiyangTimeStart != '' and params.shiyangTimeStart != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(chongwuOrder.shiyang_time) >= UNIX_TIMESTAMP(#{params.shiyangTimeStart}) ]]>
+            </if>
+            <if test=" params.shiyangTimeEnd != '' and params.shiyangTimeEnd != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(chongwuOrder.shiyang_time) <= UNIX_TIMESTAMP(#{params.shiyangTimeEnd}) ]]>
+            </if>
+            <if test=" params.insertTimeStart != '' and params.insertTimeStart != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(chongwuOrder.insert_time) >= UNIX_TIMESTAMP(#{params.insertTimeStart}) ]]>
+            </if>
+            <if test=" params.insertTimeEnd != '' and params.insertTimeEnd != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(chongwuOrder.insert_time) <= UNIX_TIMESTAMP(#{params.insertTimeEnd}) ]]>
+            </if>
+        </where>
+        order by a.${params.orderBy} desc
+    </select>
+
+</mapper>
